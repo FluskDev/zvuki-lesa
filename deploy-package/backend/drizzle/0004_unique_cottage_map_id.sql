@@ -1,0 +1,1 @@
+ALTER TABLE "cottages" ADD CONSTRAINT "cottages_map_id_unique" UNIQUE("map_id");

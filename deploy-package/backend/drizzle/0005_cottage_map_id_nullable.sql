@@ -1,0 +1,1 @@
+ALTER TABLE "cottages" ALTER COLUMN "map_id" DROP NOT NULL;

@@ -1,0 +1,413 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: #141414;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+  }
+
+  * {
+    -webkit-text-size-adjust: none;
+    text-size-adjust: none;
+  }
+
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.625rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    background: #141414;
+  }
+}
+
+html, body, #root {
+  background: #0F0F0E;
+}
+
+@layer utilities {
+  /* Десктоп: фиксированный фуллскрин-контейнер под JS-snap. */
+  .snap-scroll-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Мобильные: обычный поток, без фиксированного позиционирования.
+     Без этого wrapper не растёт по контенту и body-скролл ломается. */
+  @media (max-width: 768px) {
+    .snap-scroll-wrapper {
+      position: static;
+      height: auto;
+    }
+  }
+
+  #amenities {
+    padding-top: 5rem;
+  }
+
+  #about {
+    padding-top: 5rem;
+  }
+
+  @media (min-width: 1024px) {
+    #amenities {
+      padding-top: 4rem;
+      padding-bottom: 7rem;
+    }
+
+    #about {
+      padding-top: 9rem;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes slideInFromRight {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+
+  .animate-slideInRight {
+    animation: slideInFromRight 0.5s ease-out forwards;
+  }
+}
+
+/* Dialog close button styling */
+[data-slot="dialog-close"] {
+  background: #16a34a !important;
+  color: white !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+[data-slot="dialog-close"]:hover {
+  background: #15803d !important;
+}
+
+[data-slot="dialog-close"]:focus-visible {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+[data-slot="dialog-close"] svg {
+  stroke: white !important;
+}
+
+/* ============================================================
+   Кастомный скроллбар — единый стиль в тон emerald-700
+   Применяется к .nice-scroll, [data-slot="dialog-content"] и
+   всему overflow-y-auto внутри диалогов.
+   ============================================================ */
+
+/* WebKit (Chrome, Edge, Safari) */
+.nice-scroll::-webkit-scrollbar,
+[data-slot="dialog-content"]::-webkit-scrollbar {
+  width: 10px;
+}
+
+.nice-scroll::-webkit-scrollbar-track,
+[data-slot="dialog-content"]::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 4px 0;
+}
+
+.nice-scroll::-webkit-scrollbar-thumb,
+[data-slot="dialog-content"]::-webkit-scrollbar-thumb {
+  background: #d4d4d8; /* stone-300 */
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+
+.nice-scroll::-webkit-scrollbar-thumb:hover,
+[data-slot="dialog-content"]::-webkit-scrollbar-thumb:hover {
+  background: #15803d; /* emerald-700 */
+  background-clip: padding-box;
+}
+
+/* Firefox */
+.nice-scroll,
+[data-slot="dialog-content"] {
+  scrollbar-width: thin;
+  scrollbar-color: #d4d4d8 transparent;
+}
+
+.nice-scroll:hover,
+[data-slot="dialog-content"]:hover {
+  scrollbar-color: #15803d transparent;
+}
+
+/* ============================================================
+   «Полевой журнал Кавказа» — общие стили
+   Активируется классом .journal на обёртке страницы блога/SEO.
+   ============================================================ */
+
+@layer base {
+  body {
+    background: #0F0F0E;
+  }
+}
+
+@layer utilities {
+  /* Текст можно выделять и копировать */
+  .selectable {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  /* Зернистая текстура поверх фона — вызывается на крупных секциях */
+  .grain {
+    position: relative;
+    isolation: isolate;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    z-index: -1;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 200px 200px;
+    opacity: 0.08;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    animation: grain-shift 8s steps(10) infinite;
+  }
+  /* Любые медиа внутри .grain явно поднимаем над grain-слоем.
+     Без этого правила mix-blend-mode: overlay на ::after с z-index: -1
+     в изолированном stacking context в некоторых браузерах «протекает»
+     на верхние слои и накладывает шум на фотографии. */
+  .grain img,
+  .grain video,
+  .grain picture,
+  .grain svg {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Декоративная «корешковая» полоса для журнальных карточек */
+  .journal-rule {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(242, 237, 227, 0.18) 12%,
+      rgba(242, 237, 227, 0.28) 50%,
+      rgba(242, 237, 227, 0.18) 88%,
+      transparent 100%
+    );
+  }
+
+  /* Свечение по краям для заголовков */
+  .text-glow-warm {
+    text-shadow: 0 1px 0 rgba(201, 123, 75, 0.15);
+  }
+
+  /* Корешок для обложки (вертикальная текстовая плашка) */
+  .vertical-rl {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+
+  /* Прогресс-бар чтения */
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 50;
+    pointer-events: none;
+    background: transparent;
+  }
+  .reading-progress > span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(to right, #C97B4B, #D4A857);
+    transform-origin: left center;
+    will-change: transform;
+  }
+
+  /* Хайлайт при наведении на заголовок раздела — для TOC-ссылок */
+  .toc-link {
+    display: block;
+    padding: 0.4rem 0 0.4rem 0.75rem;
+    border-left: 1px solid rgba(242, 237, 227, 0.15);
+    color: rgba(242, 237, 227, 0.55);
+    font-family: "Manrope", system-ui, sans-serif;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    transition: color 180ms ease, border-color 180ms ease, background-color 180ms ease;
+    text-decoration: none;
+  }
+  .toc-link:hover {
+    color: #F2EDE3;
+    border-left-color: #C97B4B;
+    background: rgba(201, 123, 75, 0.05);
+  }
+  .toc-link.active {
+    color: #F2EDE3;
+    border-left-color: #D4A857;
+    background: rgba(212, 168, 87, 0.06);
+  }
+
+  /* Pull-quote внутри prose — заглавная буква */
+  .prose blockquote {
+    position: relative;
+  }
+  .prose blockquote::before {
+    content: "“";
+    position: absolute;
+    top: -1.4rem;
+    left: -0.5rem;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 6rem;
+    line-height: 1;
+    color: rgba(201, 123, 75, 0.45);
+    pointer-events: none;
+  }
+
+  /* Кнопка-якорь для копирования ссылки на раздел */
+  .anchor-link {
+    opacity: 0;
+    margin-left: 0.5rem;
+    color: rgba(242, 237, 227, 0.4);
+    transition: opacity 180ms ease, color 180ms ease;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.85em;
+  }
+  h2:hover .anchor-link,
+  h3:hover .anchor-link {
+    opacity: 1;
+  }
+  .anchor-link:hover {
+    color: #C97B4B;
+  }
+
+  /* Метка категории — короткая моно-плашка */
+  .kicker {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Декоративный «буквица»-открыватель раздела */
+  .drop-cap {
+    font-family: "Cormorant Garamond", serif;
+    float: left;
+    font-size: 4.5rem;
+    line-height: 0.85;
+    padding: 0.35rem 0.6rem 0 0;
+    color: #D4A857;
+    font-style: italic;
+  }
+
+  /* Hover-увеличение карточки обложки */
+  .cover-zoom {
+    overflow: hidden;
+  }
+  .cover-zoom img,
+  .cover-zoom .cover-grad {
+    transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .cover-zoom:hover img,
+  .cover-zoom:hover .cover-grad {
+    transform: scale(1.05);
+  }
+}

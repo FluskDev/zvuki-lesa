@@ -1,0 +1,138 @@
+---
+import '../styles/global.css';
+import { Toaster } from '../components/ui/sonner';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  keywords?: string;
+  canonical?: string;
+  ogImage?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogUrl?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+  schema?: object | object[];
+  robots?: string;
+}
+
+const {
+  title = 'Звуки Леса — Аренда домиков в станице Даховская | Адыгея',
+  description = 'Гостевой дом Звуки леса — уютные домики в станице Даховская, Республика Адыгея. Горный отдых, джиппинг, рафтинг, банный чан. Чистый воздух и комфорт для всей семьи от 4500 ₽/ночь.',
+  keywords = 'гостевой дом Даховская, аренда домика Адыгея, отдых в горах Адыгея, джиппинг Адыгея, рафтинг Адыгея, банный чан Даховская, домики в горах, горный туризм, отдых с семьей Адыгея, гостиница Даховская',
+  canonical = Astro.url.href,
+  ogImage = 'https://zvuki-lesa.ru/og-image.jpg',
+  ogTitle = 'Звуки Леса — Гостевой дом в станице Даховская, Адыгея',
+  ogDescription = 'Уютные домики в сердце горной Адыгеи. Джиппинг, рафтинг, банный чан и панорамные виды на Кавказские горы. От 4500 ₽/ночь.',
+  ogUrl = 'https://zvuki-lesa.ru/',
+  twitterTitle = 'Звуки Леса — Домики в горах Адыгеи',
+  twitterDescription = 'Уютные домики, джиппинг, рафтинг, банный чан. От 4500 ₽/ночь.',
+  twitterImage = 'https://zvuki-lesa.ru/og-image.jpg',
+  schema,
+  robots = 'index, follow, max-snippet:-1, max-image-preview:large',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+
+    <!-- Primary Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content="Звуки Леса" />
+    <meta name="robots" content={robots} />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="language" content="Russian" />
+    <meta name="distribution" content="global" />
+    <meta name="rating" content="general" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={ogUrl} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Гостевой дом Звуки Леса в Даховской — вид на горы" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content="Звуки Леса" />
+    <meta property="og:email" content="booking@zvuki-lesa.ru" />
+    <meta property="og:phone_number" content="+79282110249" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={ogUrl} />
+    <meta name="twitter:title" content={twitterTitle} />
+    <meta name="twitter:description" content={twitterDescription} />
+    <meta name="twitter:image" content={twitterImage} />
+    <meta name="twitter:image:alt" content="Гостевой дом Звуки Леса" />
+    <meta name="twitter:site" content="@zvukilesa01" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonical} />
+
+    <!-- Alternate Languages -->
+    <link rel="alternate" hreflang="ru" href={ogUrl} />
+
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="RU-AD" />
+    <meta name="geo.placename" content="станица Даховская, Майкопский район, Республика Адыгея" />
+    <meta name="geo.position" content="44.223140;40.199615" />
+    <meta name="ICBM" content="44.223140, 40.199615" />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#10b981" />
+    <meta name="msapplication-TileColor" content="#10b981" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="https://api-maps.yandex.ru" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Шрифты -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=a662013a-bd16-4b08-b2a2-930268c87a3f"></script>
+
+    <!-- JSON-LD Structured Data -->
+    {schema && (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    )}
+  </head>
+  <body>
+    <slot />
+    <Toaster client:load theme="dark" />
+
+    <!-- Блокировка зума iOS -->
+    <script>
+      document.addEventListener('gesturestart', (e) => e.preventDefault());
+      document.addEventListener('gesturechange', (e) => e.preventDefault());
+      document.addEventListener('touchmove', (e) => {
+        if ((e as TouchEvent).touches.length > 1) e.preventDefault();
+      }, { passive: false });
+    </script>
+  </body>
+</html>

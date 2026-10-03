@@ -1,0 +1,17 @@
+/* Десктоп: контейнер с фиксированной высотой и нашим JS-snap.
+   На мобильных компонент SnapScroll рендерит фрагмент без этой обёртки,
+   поэтому правила ниже действуют только для десктопа. */
+.snap-scroll-container {
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: scroll;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.snap-scroll-container section {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  position: relative;
+}

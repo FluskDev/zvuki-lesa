@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "slug": "rafting",
+    "name": "Рафтинг",
+    "description": "Сплав по горной реке",
+    "base_price": 2500,
+    "icon": "Waves",
+    "is_active": true,
+    "position": 0
+  },
+  {
+    "id": 2,
+    "slug": "jeeping",
+    "name": "Джиппинг",
+    "description": "Тур по горным дорогам",
+    "base_price": 3500,
+    "icon": "Mountain",
+    "is_active": true,
+    "position": 1
+  },
+  {
+    "id": 3,
+    "slug": "bath-cham",
+    "name": "Банный чан",
+    "description": "Чан на террасе",
+    "base_price": 2000,
+    "icon": "Flame",
+    "is_active": true,
+    "position": 2
+  },
+  {
+    "id": 4,
+    "slug": "horse-ride",
+    "name": "Конные прогулки",
+    "description": "Верховая прогулка",
+    "base_price": 1500,
+    "icon": "Users",
+    "is_active": true,
+    "position": 3
+  },
+  {
+    "id": 5,
+    "slug": "atv",
+    "name": "Квадроциклы",
+    "description": "Катание по маршрутам",
+    "base_price": 3000,
+    "icon": "Bike",
+    "is_active": true,
+    "position": 4
+  }
+]

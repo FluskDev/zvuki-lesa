@@ -1,0 +1,261 @@
+[
+  {
+    "id": 122,
+    "cottage_id": 1,
+    "url": "/Шале Уют/1.jpg",
+    "section": "main",
+    "position": 0
+  },
+  {
+    "id": 123,
+    "cottage_id": 1,
+    "url": "/Шале Уют/2.jpg",
+    "section": "interior",
+    "position": 1
+  },
+  {
+    "id": 124,
+    "cottage_id": 1,
+    "url": "/Шале Уют/3.jpg",
+    "section": "interior",
+    "position": 2
+  },
+  {
+    "id": 125,
+    "cottage_id": 1,
+    "url": "/Шале Уют/4.jpg",
+    "section": "interior",
+    "position": 3
+  },
+  {
+    "id": 126,
+    "cottage_id": 1,
+    "url": "/Шале Уют/5.jpg",
+    "section": "kitchen",
+    "position": 4
+  },
+  {
+    "id": 127,
+    "cottage_id": 1,
+    "url": "/Шале Уют/6.jpg",
+    "section": "kitchen",
+    "position": 5
+  },
+  {
+    "id": 142,
+    "cottage_id": 1,
+    "url": "/Шале Уют/7.jpg",
+    "section": "kitchen",
+    "position": 6
+  },
+  {
+    "id": 128,
+    "cottage_id": 1,
+    "url": "/Шале Уют/8.jpg",
+    "section": "kitchen",
+    "position": 7
+  },
+  {
+    "id": 129,
+    "cottage_id": 1,
+    "url": "/Шале Уют/9.jpg",
+    "section": "kitchen",
+    "position": 8
+  },
+  {
+    "id": 130,
+    "cottage_id": 1,
+    "url": "/Шале Уют/10.jpg",
+    "section": "kitchen",
+    "position": 9
+  },
+  {
+    "id": 131,
+    "cottage_id": 1,
+    "url": "/Шале Уют/11.jpg",
+    "section": "kitchen",
+    "position": 10
+  },
+  {
+    "id": 133,
+    "cottage_id": 1,
+    "url": "/Шале Уют/12.jpg",
+    "section": "bathroom",
+    "position": 11
+  },
+  {
+    "id": 134,
+    "cottage_id": 1,
+    "url": "/Шале Уют/13.jpg",
+    "section": "bathroom",
+    "position": 12
+  },
+  {
+    "id": 135,
+    "cottage_id": 1,
+    "url": "/Шале Уют/14.jpg",
+    "section": "bathroom",
+    "position": 13
+  },
+  {
+    "id": 136,
+    "cottage_id": 1,
+    "url": "/Шале Уют/15.jpg",
+    "section": "bathroom",
+    "position": 14
+  },
+  {
+    "id": 137,
+    "cottage_id": 1,
+    "url": "/images/placeholder-cottage.jpg",
+    "section": "amenities",
+    "position": 15
+  },
+  {
+    "id": 138,
+    "cottage_id": 1,
+    "url": "/images/placeholder-cottage.jpg",
+    "section": "amenities",
+    "position": 16
+  },
+  {
+    "id": 139,
+    "cottage_id": 1,
+    "url": "/images/placeholder-cottage.jpg",
+    "section": "amenities",
+    "position": 17
+  },
+  {
+    "id": 140,
+    "cottage_id": 1,
+    "url": "/images/placeholder-cottage.jpg",
+    "section": "amenities",
+    "position": 18
+  },
+  {
+    "id": 141,
+    "cottage_id": 1,
+    "url": "/images/placeholder-cottage.jpg",
+    "section": "amenities",
+    "position": 19
+  },
+  {
+    "id": 132,
+    "cottage_id": 1,
+    "url": "/images/placeholder-cottage.jpg",
+    "section": "kitchen",
+    "position": 20
+  },
+  {
+    "id": 143,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/1.jpg",
+    "section": "main",
+    "position": 16
+  },
+  {
+    "id": 144,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/2.jpg",
+    "section": "interior",
+    "position": 17
+  },
+  {
+    "id": 145,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/3.jpg",
+    "section": "interior",
+    "position": 18
+  },
+  {
+    "id": 146,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/4.jpg",
+    "section": "interior",
+    "position": 19
+  },
+  {
+    "id": 147,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/5.jpg",
+    "section": "kitchen",
+    "position": 20
+  },
+  {
+    "id": 148,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/6.jpg",
+    "section": "kitchen",
+    "position": 21
+  },
+  {
+    "id": 149,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/7.jpg",
+    "section": "kitchen",
+    "position": 22
+  },
+  {
+    "id": 150,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/8.jpg",
+    "section": "bathroom",
+    "position": 23
+  },
+  {
+    "id": 151,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/9.jpg",
+    "section": "bathroom",
+    "position": 24
+  },
+  {
+    "id": 152,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/10.jpg",
+    "section": "bathroom",
+    "position": 25
+  },
+  {
+    "id": 153,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/11.jpg",
+    "section": "amenities",
+    "position": 26
+  },
+  {
+    "id": 154,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/12.jpg",
+    "section": "amenities",
+    "position": 27
+  },
+  {
+    "id": 155,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/13.jpg",
+    "section": "amenities",
+    "position": 28
+  },
+  {
+    "id": 156,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/14.jpg",
+    "section": "amenities",
+    "position": 29
+  },
+  {
+    "id": 157,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/15.jpg",
+    "section": "amenities",
+    "position": 30
+  },
+  {
+    "id": 158,
+    "cottage_id": 2,
+    "url": "/Лесная резеденция/16.jpg",
+    "section": "amenities",
+    "position": 31
+  }
+]

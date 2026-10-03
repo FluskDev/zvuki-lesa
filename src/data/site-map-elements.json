@@ -1,0 +1,34 @@
+[
+  {
+    "map_id": "Парковка",
+    "title": "Парковка",
+    "description": "Гостевой паркинг на 6 машин рядом с домиками.",
+    "photo_url": "/images/placeholder-cottage.jpg",
+    "has_button": false,
+    "updated_at": "2026-07-27T08:17:27.496Z"
+  },
+  {
+    "map_id": "Лес1",
+    "title": "Лес",
+    "description": "Хвойный лес вокруг — тропы для прогулок прямо от домика.",
+    "photo_url": "/images/placeholder-cottage.jpg",
+    "has_button": false,
+    "updated_at": "2026-07-27T08:17:29.693Z"
+  },
+  {
+    "map_id": "Лес2",
+    "title": "Лес",
+    "description": "Буковый лес на склоне. Маршрут к реке Белой.",
+    "photo_url": "/images/placeholder-cottage.jpg",
+    "has_button": false,
+    "updated_at": "2026-07-27T08:17:31.507Z"
+  },
+  {
+    "map_id": "чан",
+    "title": "Чан",
+    "description": "Чан на террасе под открытым небом. Прогрев — круглый год.",
+    "photo_url": "/images/chan.jpg",
+    "has_button": false,
+    "updated_at": "2026-07-27T08:17:33.680Z"
+  }
+]

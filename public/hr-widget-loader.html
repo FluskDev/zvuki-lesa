@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<!--
+  Страница-загрузчик виджета RealtyCalendar для iframe на главной.
+  Загружается внутри <iframe src="/hr-widget-loader.html"> из src/sections/Cabins.tsx.
+  В dev vite проксирует /hr-widget на https://homereserve.ru (см. vite.config.ts).
+  На проде Apache делает аналогичный ProxyPass /hr-widget → https://homereserve.ru.
+  Без этого homereserve.ru имеет гео-блок по IP: через VPN/с иностранных
+  IP виджет не загружается. С проксированием все запросы идут с нашего
+  российского сервера.
+-->
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Бронирование домиков</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        color: #2c2c2c;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+      #hr-widget {
+        min-height: 480px;
+        padding: 16px;
+      }
+      .loader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 64px 16px;
+        color: rgba(0, 0, 0, 0.55);
+      }
+      .loader-dot {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #059669;
+        margin-bottom: 12px;
+        animation: pulse 1.4s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 0.4; transform: scale(0.95); }
+        50%      { opacity: 1;   transform: scale(1.05); }
+      }
+
+      /* === Скролл внутри iframe ===
+         Скролл решает parent (Cabins.tsx + src/lib/lenis.ts):
+         overlay-div (.iframe-scroll-guard) НАД iframe ловит wheel/touch/key
+         в DOM родителя (Chrome focus-iframe забирает их из window.parent —
+         capture-listener бесполезен, поэтому нужен DOM-элемент поверх iframe).
+         Guard форвардит в window.__lenisScrollBy → Lenis скроллит страницу.
+         Клики guard перехватывает и программно диспатчит click в iframe
+         через elementFromPoint — пользователь видит обычное поведение
+         карточек домиков, а скролл родителя работает. Skip-логика
+         fullscreen модалки бронирования — в parent (iframe.iframe-fullscreen
+         класс на стороне родителя → guard скрывается через display:none). */
+
+      /* === Цвет фона карточек объектов (.hotel-card) ===
+         Виджет homereserve.ru ставит background-color:#fff (светлый).
+         Пользователь попросил тёмный #0f0f0e — почти-чёрный, в тон
+         остальной тёмной части страницы. Перекрываем через тот же
+         scoped-селектор [data-v-bd63fcea] + !important. Текст внутри
+         карточки остаётся нативным (тёмный на тёмном = нечитаемо,
+         но в модалке/виджете могут быть свои стили для текста). */
+      body #hr-widget .hotel-card[data-v-bd63fcea],
+      body #hr-modal  .hotel-card[data-v-bd63fcea] {
+        background-color: #0f0f0e !important;
+      }
+      /* Убираем рамку карточек (border:1px solid #eeeeee в стилях виджета)
+         и вертикальный разделитель в колонке цены (.price-column).
+         На тёмном фоне #0f0f0e светло-серая рамка #eeeeee резко выбивается
+         и портит визуал. */
+      body #hr-widget .hotel-card[data-v-bd63fcea],
+      body #hr-modal  .hotel-card[data-v-bd63fcea] {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      body #hr-widget .price-column[data-v-bd63fcea],
+      body #hr-modal  .price-column[data-v-bd63fcea] {
+        border-left: none !important;
+      }
+      /* SVG-стрелка в select внутри модалки (form бронирования).
+         Виджет рисует её через fill у path; перебиваем на чёрный. */
+      #hr-modal .select__arrow path {
+        fill: #000000 !important;
+      }
+      /* Контейнер контента в select dropdown (текст выбранной опции).
+         Фон .select__input внутри виджета нативно белый (как у
+         .form-input__input для дат) — поэтому текст значения делаем
+         ЧЁРНЫМ, иначе на белом фоне ничего не видно. Фон НЕ трогаем —
+         пользователь явно сказал «не фон нужен черный а текст». */
+      #hr-modal .select__input-value {
+        color: #000000 !important;
+      }
+      /* Раскрытый дропдаун .select__dropdown (Взрослые + счётчик +
+         select возраста ребёнка). Фон нативно белый — текст и SVG-иконки
+         +/− рисуем чёрными. SVG у select__increment использует stroke,
+         не fill — перебиваем оба свойства для надёжности. */
+      #hr-modal .select__row,
+      #hr-modal .select__number {
+        color: #000000 !important;
+      }
+      #hr-modal .select__dropdown .select__increment svg path {
+        stroke: #000000 !important;
+        fill: #000000 !important;
+      }
+      /* Дочерний <select> в дропдауне гостей — выбор возраста ребёнка.
+         Нативно select рендерится белым фоном + тёмным текстом, но
+         placeholder 'Добавить ребенка' в некоторых браузерах уходит
+         в бледно-серый. Перебиваем на чёрный текст + белый фон явно.
+         Опции (option) обычно наследуют, задаём для надёжности тоже. */
+      #hr-modal .select__option-child,
+      #hr-modal .select__option-child option {
+        color: #000000 !important;
+        background-color: #ffffff !important;
+      }
+      /* Крестик-удалить на 'таблочке' уже выбранного ребёнка
+         (Ребенок: 7 лет ✕). Нативно stroke=var(--custom-text) — но
+         если переменная не подхватывается, иконка не видна. Перебиваем
+         явно на чёрный (stroke + fill для надёжности). */
+      #hr-modal .select__remove path {
+        stroke: #000000 !important;
+        fill: #000000 !important;
+      }
+      /* Кнопка выбора месяца/года в calendar picker (vanilla-calendar),
+         когда месяц/год недоступен (прошлые даты). Нативно текст
+         уходит в светло-серый (стиль disabled) — на чёрном фоне модалки
+         плохо читается. Делаем чёрный текст. Фон НЕ трогаем (нативно
+         прозрачный) — пользователь явно сказал «а фон убери черный». */
+      #hr-modal .vanilla-calendar-month_disabled,
+      #hr-modal .vanilla-calendar-year_disabled {
+        color: #000000 !important;
+      }
+      /* SVG-иконка внутри form-input__input (второй input в блоке
+         inputs — обычно иконка валидации/очистки/глаз у пароля). */
+      #hr-modal .form-input__input svg path {
+        fill: #000000 !important;
+      }
+      /* SVG-иконка в calendar-input (выбор дат) — вне модалки, в основном
+         виджете карточки объекта. */
+      #calendar-input-hotel .form-input__input svg path {
+        fill: #000000 !important;
+      }
+      /* Текст выбранной даты в <input class='form-input__text'>.
+         Нативно input в виджете идёт с бледно-серым цветом — на белом
+         фоне плохо читается. Перебиваем на чёрный. Селектор — оба
+         варианта: в модалке (#hr-modal) и в карточке объекта на главной
+         (#calendar-input-hotel). */
+      #hr-modal .form-input__text,
+      #calendar-input-hotel .form-input__text {
+        color: #000000 !important;
+      }
+      /* Текст внутри блока hotel-detail-info (описание домика в модалке).
+         На тёмном фоне модалки нативный тёмный текст не читается. */
+      #hr-modal .hotel-detail-info p p {
+        color: #ffffff !important;
+      }
+      /* Контейнер формы — виджет рисует border 1px и box-shadow
+         0 4px 10px #0000000d. На тёмном фоне модалки светлый border
+         и серая тень выбиваются, убираем оба. */
+      #hr-modal .form {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      /* Внутренние .form__container (не последний) — между ними виджет
+         рисует светло-серый border-bottom 1px solid #eeeeee. На тёмном
+         фоне модалки смотрится как грязная полоска — убираем. */
+      #hr-modal .form__container:not(:last-child) {
+        border-bottom: none !important;
+      }
+      /* Фиксированная нижняя панель страницы basket-page (шаг перед
+         оплатой) — дублирует кнопку 'Забронировать', которая уже есть
+         в sticky-панели .hotel-detail__fixed. Скрываем, чтобы не было
+         двух кнопок одновременно. */
+      #hr-modal .basket-page__fixed {
+        display: none !important;
+      }
+      /* Выбранный тариф (.tariff-card--selected) — у виджета border +
+         inset-shadow по var(--custom-main), background-color
+         var(--custom-main-light) (закомментирован в DevTools, но может
+         быть активен). Отключаем фон явно — пусть остаётся только
+         рамка/обводка от selected-состояния. */
+      #hr-modal .tariff-card--selected[data-v-96f42083] {
+        background-color: transparent !important;
+      }
+      /* Информационный блок про время заезда/выезда ('Заезд с 14:00 до
+         23:30, выезд с 00:00 до 12:00'). Фон .form__info-block нативно
+         светлый — текст перебиваем на чёрный. */
+      #hr-modal .form__info-block-text {
+        color: #000000 !important;
+      }
+
+      /* === Модалка бронирования — fullscreen ===
+         Тёмная тема виджета откачена (Task "верни белый"): карточки,
+         текст и иконки рендерятся виджетом как задумано (светлые). Но
+         structural override модалки оставлен: иначе она открывается
+         ~600×700 в центре viewport, а должна быть на весь экран.
+         Растягиваем через position:fixed на родителе iframe (см.
+         iframe.iframe-fullscreen в src/index.css). Внутри iframe
+         задаём 100vw×100vh контейнеру модалки. */
+      body #hr-modal {
+        background-color: rgba(0, 0, 0, 0.6) !important;
+      }
+      body #hr-modal > div.hr-modal {
+        align-items: stretch !important;
+        justify-content: stretch !important;
+        padding: 0 !important;
+      }
+      body #hr-modal > div.hr-modal > div {
+        width: 100vw !important;
+        height: 100vh !important;
+        max-width: none !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        background-color: #0f0f0e !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      /* Скроллим ВСЮ модалку, не только .hotel-detail__container —
+         так колесо мыши / touchpad работает в любой точке модалки,
+         не только при наведении на центр. У контейнера overflow
+         снимаем, чтобы скролл шёл на родителе. */
+      body #hr-modal > div.hr-modal > div .hotel-detail__container {
+        flex: 0 0 auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+      }
+      /* Скрыть скроллбар у корневого скролл-контейнера модалки.
+         Сами стили — кроссбраузерно: webkit (Chrome/Safari),
+         Firefox, IE/old Edge. */
+      body #hr-modal > div.hr-modal > div::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+      }
+      body #hr-modal > div.hr-modal > div {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+      }
+      /* Фиксированная нижняя панель с 'Забронировать' должна остаться
+         видимой при скролле. Переводим в sticky с фоном (иначе будет
+         просвечивать контент). Цвет фона — как у модалки #0f0f0e,
+         чтобы не выбивался. */
+      body #hr-modal > div.hr-modal > div .hotel-detail__fixed {
+        position: sticky !important;
+        bottom: 0 !important;
+        background-color: #0f0f0e !important;
+        z-index: 2 !important;
+        flex-shrink: 0 !important;
+      }
+      /* У нативной .hotel-detail__fixed виджет рисует border-bottom
+         1px solid #e0e0e0 (светло-серая полоска). На тёмном фоне
+         модалки #0f0f0e она выбивается и режет глаз — отключаем. */
+      body #hr-modal .hotel-detail__fixed[data-v-81781e82] {
+        border-bottom: none !important;
+      }
+      /* Кнопка 'Открыть Яндекс Карты' внутри ymaps3 — находится в
+         нижне-левом углу карты (ymaps3--controls_bottom _left). По
+         дефолту у ymaps3 свой z-index выше, чем у sticky-панели
+         .hotel-detail__fixed (z-index: 2). При наложении кнопка
+         карты перекрывает 'Забронировать' или наоборот —
+         в любом случае визуальный конфликт. Поднимаем z-index
+         sticky-панели выше, чтобы она всегда была сверху. */
+      body #hr-modal > div.hr-modal > div .hotel-detail__fixed {
+        z-index: 1000 !important;
+      }
+      /* Виджет рисует свою .hr-modal[data-v-7a7e9f92] (внутренний
+         bottom-sheet) со стилями margin-top: 48px и border-radius
+         16px 16px 0 0 (закомментированы в исходнике, но могут
+         раскомментироваться при обновлении виджета). Мы уже растянули
+         модалку на 100vw×100vh — никаких отступов/скруглений не нужно.
+         Override с !important перебивает на случай регрессии в widget.js. */
+      body #hr-modal .hr-modal[data-v-7a7e9f92] {
+        margin-top: 0 !important;
+        border-radius: 0 !important;
+      }
+      /* Заголовок внутри модалки/виджета (.header[data-v-1484bb7d]).
+         В исходнике виджета border-bottom закомментирован (на тёмном
+         фоне он не нужен) — но при обновлении виджета может быть
+         раскомментирован. Override с !important перестраховывает.
+         Фон #0f0f0e — как у самой модалки, чтобы header визуально
+         сливался и не было «двух тонов» при скролле. */
+      body #app .header[data-v-1484bb7d],
+      body #hr-widget .header[data-v-1484bb7d],
+      body #hr-modal .header[data-v-1484bb7d] {
+        background-color: #0f0f0e !important;
+        border-bottom: none !important;
+      }
+      /* Success-страница виджета после успешной брони: текст письма
+         с деталями заезда (рендерится в scoped-блоке [data-v-f60aed5d]).
+         Виджет использует CSS-переменную --custom-text для цвета —
+         если она не подхватывается, текст может уйти в светло-серый
+         на белом фоне. Закрепляем явно #0f0f0e (тёмный, читаемый
+         на светлом фоне success-страницы). */
+      body #app [data-v-f60aed5d],
+      body #app [data-v-f60aed5d] p,
+      body #hr-widget [data-v-f60aed5d],
+      body #hr-widget [data-v-f60aed5d] p,
+      body #hr-modal [data-v-f60aed5d],
+      body #hr-modal [data-v-f60aed5d] p {
+        color: #0f0f0e !important;
+      }
+      /* Заголовок 'Забронировано' и подзаголовок с адресом на
+         success-странице — выделены белым поверх тёмного фона
+         модалки. Селектор .success__title/.success__address + scoped
+         [data-v-f60aed5d] специфичнее правила выше ([data-v-f60aed5d]
+         p), поэтому !important здесь побеждает. */
+      body #app .success__title[data-v-f60aed5d],
+      body #hr-widget .success__title[data-v-f60aed5d],
+      body #hr-modal .success__title[data-v-f60aed5d],
+      body #app .success__address[data-v-f60aed5d],
+      body #hr-widget .success__address[data-v-f60aed5d],
+      body #hr-modal .success__address[data-v-f60aed5d] {
+        color: #ffffff !important;
+      }
+      /* Кнопка .button-secondary в calendar picker и других местах
+         виджета. У нативного стиля background-color может быть белым
+         — перебиваем на тёмный #0f0f0e, чтобы кнопка не «выбивалась»
+         рядом с тёмной модалкой. text/border не трогаем — у них
+         var(--custom-text) с фолбэком у виджета работает корректно. */
+      body #app .button-secondary[data-v-3fccc16b],
+      body #hr-widget .button-secondary[data-v-3fccc16b],
+      body #hr-modal .button-secondary[data-v-3fccc16b],
+      body .vanilla-calendar .button-secondary[data-v-3fccc16b] {
+        background-color: #0f0f0e !important;
+      }
+      /* Конкретная ссылка-кнопка «Распечатать» на success-странице
+         (после успешной брони). Это <a class="button-secondary big">,
+         не <button> — общий селектор выше тоже ловит, но для надёжности
+         отдельный override с тегом <a> и классом .big — мало ли виджет
+         когда-то сделает для ссылок отдельные стили (а обычно для них
+         background-color сбрасывается на transparent). */
+      body #app a.button-secondary.big[data-v-3fccc16b],
+      body #hr-widget a.button-secondary.big[data-v-3fccc16b],
+      body #hr-modal a.button-secondary.big[data-v-3fccc16b] {
+        background-color: #0f0f0e !important;
+      }
+      /* Ссылка-кнопка с телефоном менеджера ('+7 939 946-58-46') на
+         success-странице. Виджет использует color:var(--custom-text)
+         — у нас эта переменная не подхватывается и текст уходит
+         в светло-серый, на белом фоне success-страницы плохо читается.
+         Перебиваем на чистый чёрный #000000. */
+      body #app a.button-secondary.small[data-v-3fccc16b],
+      body #hr-widget a.button-secondary.small[data-v-3fccc16b],
+      body #hr-modal a.button-secondary.small[data-v-3fccc16b] {
+        color: #000000 !important;
+      }
+      /* Кнопка-крестик, которую добавляет скрипт ниже на success-страницу
+         (.main-page с .success-container). Контейнеру нужен position:relative,
+         чтобы крестик абсолютно позиционировался внутри, а не относительно
+         всей модалки. z-index — выше любого контента виджета, чтобы клик
+         не перехватывался другими элементами. */
+      body #hr-modal .main-page,
+      body #hr-modal .success-container {
+        position: relative !important;
+      }
+      body #hr-modal .hr-close-success {
+        position: absolute !important;
+        top: 12px !important;
+        right: 12px !important;
+        z-index: 9999 !important;
+        width: 36px !important;
+        height: 36px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: none !important;
+        border-radius: 50% !important;
+        background: rgba(255, 255, 255, 0.92) !important;
+        color: #0f0f0e !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
+        transition: background-color 0.15s ease, transform 0.15s ease !important;
+        -webkit-tap-highlight-color: transparent !important;
+      }
+      body #hr-modal .hr-close-success:hover {
+        background: #ffffff !important;
+        transform: scale(1.06) !important;
+      }
+      body #hr-modal .hr-close-success:active {
+        transform: scale(0.94) !important;
+      }
+      body #hr-modal .hr-close-success svg {
+        width: 20px !important;
+        height: 20px !important;
+        display: block !important;
+      }
+      /* Подпись "+16 фото" поверх карусели галереи в карточке домика.
+         Виджет использует color:var(--custom-text) — у нас эта переменная
+         не подхватывается и текст уходит в светло-серый, на любом фоне
+         (и светлом, и тёмном) плохо читается. Перебиваем на чистый чёрный. */
+      body #app .more-photos__text[data-v-c549f641],
+      body #hr-widget .more-photos__text[data-v-c549f641],
+      body #hr-modal .more-photos__text[data-v-c549f641] {
+        color: #000000 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="hr-widget">
+      <div class="loader">
+        <div class="loader-dot"></div>
+        <p>Загружаем модуль бронирования…</p>
+      </div>
+    </div>
+
+    <!--
+      widget.js идёт через наш proxy /hr-widget/widget.js → homereserve.ru/widget.js.
+      Ниже initWidgetList находит #hr-widget в этом документе и рисует туда
+      список объектов. Так как proxy на /hr-widget/* сохраняет same-origin,
+      виджет сможет ходить за данными через /hr-widget/api/... → homereserve.ru.
+    -->
+    <script type="module" src="/hr-widget/widget.js"></script>
+    <script type="module">
+      window.homereserve.initWidgetList({ token: 'feEBPdLdgb' });
+    </script>
+
+    <!--
+      Модалка бронирования рендерится ВНУТРИ iframe и ограничена его
+      размерами — даже если внутри модалка на 100vw×100vh, снаружи она
+      не выйдет за пределы iframe-блока в Cabins.tsx. Чтобы растянуть
+      iframe на весь viewport родителя когда модалка открыта:
+        1) MutationObserver ниже отслеживает появление #hr-modal;
+        2) при open/close шлёт postMessage родителю;
+        3) Cabins.tsx слушает сообщение и навешивает .iframe-fullscreen,
+           который ставит position:fixed + 100vw×100vh + z-index:9999.
+      parent и iframe — same-origin (через /hr-widget/* proxy), поэтому
+      parent.postMessage безопасен без targetOrigin проверки.
+    -->
+    <script>
+      (function () {
+        function isVisible(el) {
+          if (!el) return false;
+          const style = el.ownerDocument.defaultView.getComputedStyle(el);
+          return (
+            style.display !== 'none' &&
+            style.visibility !== 'hidden' &&
+            el.offsetParent !== null
+          );
+        }
+        function checkAndPost() {
+          const modal = document.getElementById('hr-modal');
+          window.parent.postMessage(
+            { type: 'hr-modal-state', open: isVisible(modal) },
+            '*',
+          );
+        }
+        const observer = new MutationObserver(checkAndPost);
+        observer.observe(document.documentElement, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['style', 'class', 'hidden', 'aria-hidden'],
+        });
+        // Стартовая проверка через 200мс — после первой отрисовки виджета.
+        window.setTimeout(checkAndPost, 200);
+      })();
+    </script>
+
+    <!--
+      Крестик на success-странице (после успешной брони). Виджет рисует
+      <div class="main-page">...<div class="success-container">...success__title...success__address...success__text...btns_section...
+      Своего крестика у виджета в success-контейнере нет — гостю некуда
+      нажать, чтобы вернуться на сайт. Скрипт ниже:
+        1) MutationObserver ловит появление .success-container;
+        2) добавляет <button class="hr-close-success"> с SVG-крестиком;
+        3) при клике ставит #hr-modal в display:none, после чего
+           существующий observer (выше) сам отправляет родителю
+           postMessage 'hr-modal-state: false' → Cabins.tsx убирает
+           iframe-fullscreen и iframe сворачивается обратно.
+      Двойные обработчики через { once: true } и удаление через
+      .hr-close-success (не пересоздаём каждый раз).
+    -->
+    <script>
+      (function () {
+        const CLOSE_SVG =
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>';
+
+        function attachClose() {
+          // Берём main-page (он есть ВСЕГДА когда виджет открыт, даже вне success).
+          // Если уже внутри есть наш крестик — не дублируем.
+          const mainPage = document.querySelector('#hr-modal .main-page');
+          if (!mainPage) return;
+          if (mainPage.querySelector(':scope > .hr-close-success')) return;
+          // Показываем только когда .success-container уже в DOM (после бронирования).
+          const success = mainPage.querySelector(':scope > .success-container')
+            || mainPage.querySelector('.success-container');
+          if (!success) return;
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'hr-close-success';
+          btn.setAttribute('aria-label', 'Закрыть и вернуться на сайт');
+          btn.setAttribute('title', 'Закрыть');
+          btn.innerHTML = CLOSE_SVG;
+
+          // Кликаем — скрываем модалку. Existing observer выше сам пошлёт postMessage.
+          btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const modal = document.getElementById('hr-modal');
+            if (modal) modal.style.display = 'none';
+          }, { capture: true });
+
+          // Вешаем на main-page (он самый внешний и точно существует).
+          mainPage.appendChild(btn);
+        }
+
+        // Наблюдаем за всем документом — виджет перерисовывает .main-page
+        // на разных шагах, и нам надо вешать крестик каждый раз на новую копию.
+        const obs = new MutationObserver(function () {
+          // throttle через rAF — а то на каждый чих виджета пересоздаём DOM-плашку
+          if (attachClose._scheduled) return;
+          attachClose._scheduled = true;
+          requestAnimationFrame(function () {
+            attachClose._scheduled = false;
+            try { attachClose(); } catch (err) { /* silent */ }
+          });
+        });
+        obs.observe(document.documentElement, { childList: true, subtree: true });
+
+        // Стартовая проверка — после первой отрисовки виджета.
+        window.setTimeout(function () {
+          try { attachClose(); } catch (err) { /* silent */ }
+        }, 400);
+      })();
+    </script>
+
+    <!-- Скрипт скролл-форвардера убран: всю работу делает parent
+         (см. blur-ловушку в src/lib/lenis.ts). Виджет сам управляет
+         своим контентом — никаких overflow-хаков, touchmove,
+         MutationObserver и keydown-форварда внутри iframe больше
+         не нужно. -->
+  </body>
+</html>

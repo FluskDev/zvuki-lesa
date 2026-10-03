@@ -1,0 +1,53 @@
+{
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1784126040203,
+      "tag": "0000_initial",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784199969031,
+      "tag": "0001_add_reviews_external_id",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784202073842,
+      "tag": "0002_messy_leopardon",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1784202734014,
+      "tag": "0003_fancy_ulik",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1784205811094,
+      "tag": "0004_unique_cottage_map_id",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1784206639792,
+      "tag": "0005_cottage_map_id_nullable",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1784207509010,
+      "tag": "0006_site_map_elements",
+      "breakpoints": true
+    }
+  ]
+}

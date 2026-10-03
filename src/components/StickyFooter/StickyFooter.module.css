@@ -1,0 +1,101 @@
+.booker-tray-viewport {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+  z-index: 9999;
+}
+
+.container {
+  max-width: 1372px;
+  margin: 0 auto;
+  padding: 0 34px;
+}
+
+/* === Скрываем трей, когда открыто мобильное бургер-меню ===
+   Атрибут [data-menu-open] на <body> выставляется Navigation.tsx
+   при isMobileMenuOpen === true.
+   Почему data-атрибут, а не класс body.menu-open:
+     В PostCSS Modules по умолчанию ЛЮБОЙ класс в селекторе внутри
+     .module.css считается локальным и хешируется. То есть
+     `body.menu-open .booker-tray-viewport` после компиляции
+     превращается в `body._menu-open_<hash>_<id> ._booker-tray-…`.
+     А React навешивает на <body> литеральный класс `menu-open`,
+     селектор не совпадает — правило молча не работает.
+   Атрибутные селекторы ([data-X]) CSS Modules не затрагивает:
+     [data-menu-open] остаётся как есть, навешенный через
+     setAttribute('data-menu-open', 'true') — гарантированно
+     матчится. Без этой защиты трей (z-index 9999) видно поверх
+     чёрного оверлея меню (z-index 60), и трей перекрывает
+     телефонный номер внизу оверлея — пользователь видит
+     «кнопку внутри бургер-меню», что неуместно. */
+body[data-menu-open="true"] .booker-tray-viewport {
+  display: none !important;
+}
+
+.footer-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  background-color: #2b2b30;
+  padding: 8px;
+  /* Трей больше не растягивается на всю ширину viewport — подгоняется
+     под кнопку + padding. С явной max-width на узких экранах (375px)
+     это удерживает трей от «расползания» вбок, а на десктопе
+     оставляет аккуратную пилюлю по центру внизу. */
+  width: fit-content;
+  max-width: calc(100vw - 48px);
+  margin: 0 auto;
+}
+
+.footer-cta {
+  /* Кнопка больше не на 100% ширины трея — по содержимому, с
+     явной разумной шириной. min-width чтобы «Забронировать» не
+     сжимался до нечитаемой узкой полоски на маленьких телефонах. */
+  width: auto;
+  min-width: 200px;
+  max-width: 320px;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+
+  /* === Просто белая CTA ===
+     Высокий инверсный контраст с тёмной пилюлей .footer-body
+     (#2b2b30): белая кнопка с тёмным текстом читается как
+     «приподнятый» островок на тёмном трее — выразительно без
+     избытка деталей.
+     Текст — #0f0f0e, тот же тон что body bg (echoes site palette
+     в обе стороны: тёмный фон сайта → тёмный текст кнопки).
+     border-radius: 9999px — пилюля под пилюлю, согласуется с
+     .footer-body (100px). Иначе rounded-md (6px) торчит
+     квадратиком внутри круглой обводки и сразу режет глаз.
+     inset-тени: верхний чисто-белый highlight (1px) + нижний
+     тёмная линия — имитируют свет сверху, кнопка «как нажатая
+     пластинка», без transitions.
+     Внешняя лёгкая drop-shadow + белый outline ring (по сути
+     повторяющий фон, но на 8% прозрачности) отделяет кнопку от
+     тёмной пилюли, чтобы при размытии скроллом края не сливались. */
+  background: #ffffff !important;
+  color: #0f0f0e !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 9999px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Мгновенный hover — без transition. Подтверждение интерактивности
+   «щелчком» (stone-100 тон), без плавного перехода. */
+.footer-cta:hover {
+  background: #f5f5f4 !important; /* stone-100 */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.12) !important;
+}

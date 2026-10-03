@@ -1,0 +1,35 @@
+---
+import HeroCarousel from '../islands/HeroCarousel';
+import type { HeroSlide } from '../islands/HeroCarousel';
+
+const slides: HeroSlide[] = [
+  {
+    src: '/cabin-1-enhanced.webp',
+    header: 'Что такое Звуки Леса?',
+    title: 'Уютные домики в горах',
+    description: 'Отдохните от городской суеты в комфортных домиках',
+  },
+  {
+    src: '/services/rafting/photo_43_2026-04-26_11-45-32.webp',
+    header: 'Что такое Звуки Леса?',
+    title: 'Сплав по горным рекам',
+    description: 'Незабываемые впечатления от рафтинга для всей семьи',
+  },
+  {
+    src: '/services/jeeping/photo-39-cinematic.webp',
+    header: 'Что такое Звуки Леса?',
+    title: 'Джип-туры по горам',
+    description: 'Исследуйте живописные горные маршруты на внедорожниках',
+  },
+  {
+    src: '/services/bath-cham/hero-evening.webp',
+    header: 'Что такое Звуки Леса?',
+    title: 'Банный чан на свежем воздухе',
+    description: 'Расслабление и здоровье: Прогрев мышц, снятие стресса, улучшение кровообращения и обмена веществ.',
+  },
+];
+---
+
+<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <HeroCarousel client:load slides={slides} autoplayInterval={6000} />
+</section>

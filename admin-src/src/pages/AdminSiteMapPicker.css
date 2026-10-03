@@ -1,0 +1,65 @@
+.admin-site-map-picker {
+  width: 100%;
+  height: 100%;
+}
+
+.admin-site-map-picker svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Курсор pointer только для неза́нятых точек; занятые получают not-allowed. */
+.admin-site-map-picker svg g#_Домик1:not(.map-occupied),
+.admin-site-map-picker svg g#_Домик2:not(.map-occupied),
+.admin-site-map-picker svg g#_Домик3:not(.map-occupied) {
+  cursor: pointer;
+}
+
+.admin-site-map-picker svg g#_Домик1:not(.map-occupied) *,
+.admin-site-map-picker svg g#_Домик2:not(.map-occupied) *,
+.admin-site-map-picker svg g#_Домик3:not(.map-occupied) * {
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+/* Жёлтый hover — только если точка не занята. */
+.admin-site-map-picker svg g#_Домик1:not(.map-occupied):hover *,
+.admin-site-map-picker svg g#_Домик2:not(.map-occupied):hover *,
+.admin-site-map-picker svg g#_Домик3:not(.map-occupied):hover * {
+  stroke: #facc15;
+  stroke-width: 1px;
+}
+
+.admin-site-map-picker .map-highlight path,
+.admin-site-map-picker .map-highlight polygon,
+.admin-site-map-picker .map-highlight rect,
+.admin-site-map-picker .map-highlight circle,
+.admin-site-map-picker .map-highlight ellipse {
+  stroke: #22c55e !important;
+  stroke-width: 1.5px !important;
+}
+
+/* Точки, занятые другими домиками — красная обводка, клик заблокирован.
+   :not(.map-occupied) в hover ниже — специфичность id+pseudo могла перекрыть
+   класс без :not, что и приводило к «мигающему» красному при пролёте курсора. */
+.admin-site-map-picker .map-occupied {
+  cursor: not-allowed !important;
+}
+
+.admin-site-map-picker .map-occupied path,
+.admin-site-map-picker .map-occupied polygon,
+.admin-site-map-picker .map-occupied rect,
+.admin-site-map-picker .map-occupied circle,
+.admin-site-map-picker .map-occupied ellipse {
+  stroke: #ef4444 !important;
+  stroke-width: 1.5px !important;
+}
+
+/* На случай если что-то всё-таки залезет — железобетонный красный и под hover */
+.admin-site-map-picker .map-occupied:hover path,
+.admin-site-map-picker .map-occupied:hover polygon,
+.admin-site-map-picker .map-occupied:hover rect,
+.admin-site-map-picker .map-occupied:hover circle,
+.admin-site-map-picker .map-occupied:hover ellipse {
+  stroke: #ef4444 !important;
+  stroke-width: 1.5px !important;
+}

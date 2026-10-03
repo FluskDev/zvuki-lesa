@@ -1,0 +1,16 @@
+{
+  "exportedAt": "2026-09-19T13:01:52.740Z",
+  "tables": {
+    "amenities": 23,
+    "recreation_items": 4,
+    "services": 5,
+    "cottages": 2,
+    "cottage_images": 37,
+    "cottage_amenities": 30,
+    "seo_pages": 43,
+    "blog_posts": 22,
+    "images_registry": 113,
+    "site_map_elements": 4,
+    "reviews": 47
+  }
+}

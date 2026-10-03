@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "cottage_id": 1,
+    "title": "Банный чан на террасе",
+    "description": "Горячий чан под открытым небом.",
+    "photo": "/images/chan.jpg",
+    "position": 0
+  },
+  {
+    "id": 2,
+    "cottage_id": 1,
+    "title": "Рафтинг по реке Белой",
+    "description": "Сплав с инструктором.",
+    "photo": "/services/rafting/photo_43_2026-04-26_11-45-32.jpg",
+    "position": 1
+  },
+  {
+    "id": 3,
+    "cottage_id": 2,
+    "title": "Банный чан",
+    "description": "Под открытым небом.",
+    "photo": "/images/chan.jpg",
+    "position": 0
+  },
+  {
+    "id": 4,
+    "cottage_id": 2,
+    "title": "Рафтинг",
+    "description": "Сплав по реке.",
+    "photo": "/services/rafting/photo_42_2026-04-26_11-45-32.jpg",
+    "position": 1
+  }
+]

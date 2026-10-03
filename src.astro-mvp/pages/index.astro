@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Navigation } from '../components/sections/Navigation.tsx';
+import Hero from '../components/astro/Hero.astro';
+import { Cabins } from '../components/sections/Cabins.tsx';
+import Services from '../components/astro/Services.astro';
+import { About } from '../components/sections/About.tsx';
+import { Amenities } from '../components/sections/Amenities.tsx';
+import { Gallery } from '../components/sections/Gallery.tsx';
+import { Reviews } from '../components/sections/Reviews.tsx';
+import { ContactUsLanding } from '../components/sections/ContactUsLanding.tsx';
+import { Footer as FooterSection } from '../components/sections/Footer.tsx';
+import StickyFooter from '../components/islands/StickyFooter';
+import { buildHomeStructuredData } from '../lib/structuredData';
+
+interface Review {
+  id: string;
+  authorName: string;
+  text: string;
+  rating: number;
+  date: string;
+}
+
+interface ReviewsData {
+  items: Review[];
+  total: number;
+  averageRating: number;
+}
+
+// Fetch reviews for structured data (server-side)
+const apiBase = import.meta.env.PUBLIC_API_BASE ?? 'http://localhost:3001';
+let reviewsData: ReviewsData | null = null;
+try {
+  const res = await fetch(`${apiBase}/api/reviews`);
+  if (res.ok) {
+    const json = await res.json();
+    reviewsData = json?.data ?? null;
+  }
+} catch (_) {
+  reviewsData = null;
+}
+
+const schema = reviewsData
+  ? buildHomeStructuredData({ items: reviewsData.items, total: reviewsData.total, averageRating: reviewsData.averageRating } as any)
+  : null;
+---
+
+<BaseLayout schema={schema ?? undefined}>
+  <Navigation client:load />
+  <main>
+    <Hero />
+    <Cabins client:visible />
+    <Services />
+    <About client:visible />
+    <Amenities client:visible />
+    <Gallery client:visible />
+    <Reviews client:visible />
+    <ContactUsLanding client:visible />
+  </main>
+  <FooterSection client:visible />
+  <StickyFooter client:load />
+</BaseLayout>

@@ -1,0 +1,49 @@
+.site-map-container {
+  width: 100%;
+  height: 100%;
+}
+
+.site-map-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Cursor pointer for interactive elements (only when nothing is selected) */
+.site-map-container:not(.has-selection) svg g#_Домик1,
+.site-map-container:not(.has-selection) svg g#_Домик2,
+.site-map-container:not(.has-selection) svg g#_Парковка,
+.site-map-container:not(.has-selection) svg g#_чан,
+.site-map-container:not(.has-selection) svg g#_Лес1,
+.site-map-container:not(.has-selection) svg g#_Лес2 {
+  cursor: pointer;
+}
+
+/* Hover effect for all interactive elements (only when nothing is selected) */
+.site-map-container:not(.has-selection) svg g#_Домик1 *,
+.site-map-container:not(.has-selection) svg g#_Домик2 *,
+.site-map-container:not(.has-selection) svg g#_Парковка *,
+.site-map-container:not(.has-selection) svg g#_чан *,
+.site-map-container:not(.has-selection) svg g#_Лес1 *,
+.site-map-container:not(.has-selection) svg g#_Лес2 * {
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.site-map-container:not(.has-selection) svg g#_Домик1:hover *,
+.site-map-container:not(.has-selection) svg g#_Домик2:hover *,
+.site-map-container:not(.has-selection) svg g#_Парковка:hover *,
+.site-map-container:not(.has-selection) svg g#_чан:hover *,
+.site-map-container:not(.has-selection) svg g#_Лес1:hover *,
+.site-map-container:not(.has-selection) svg g#_Лес2:hover * {
+  stroke: yellow !important;
+  stroke-width: 1px !important;
+}
+
+.map-highlight path,
+.map-highlight polygon,
+.map-highlight rect,
+.map-highlight circle,
+.map-highlight ellipse {
+  stroke: #FACC15 !important;
+  stroke-width: 1.5px !important;
+}
+

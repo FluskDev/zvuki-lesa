@@ -1,0 +1,37 @@
+.superpowers/
+.prerender-routes.json
+.prerender-dist/
+
+# Зависимости
+**/node_modules/
+
+# Сборка (только корень — deploy-package/dist оставляем по запросу)
+/dist/
+/dist_perf/
+
+# Локальные логи
+_fetch.log
+
+# Артефакты Windows
+nul
+
+# Бэкапы и архивы (содержат SQL-дампы БД и dev-снимки)
+/_archive/
+/_backup/
+**/_backup/
+
+# Переменные окружения — реальные секреты
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# SSL/TLS — никогда не коммитим
+*.crt
+*.csr
+*.key
+*.pem
+
+# Локальный tool-конфиг и кэш сборки
+.claude/
+.astro/
