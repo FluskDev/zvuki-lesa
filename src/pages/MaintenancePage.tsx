@@ -31,9 +31,13 @@ export function MaintenancePage() {
     <div className="min-h-screen flex flex-col bg-[#141414] text-stone-100 select-text">
       <header className="border-b border-stone-800/60">
         <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-5 flex items-center gap-3">
-          <span className="text-2xl" aria-hidden="true">
-            🏡
-          </span>
+          <img
+            src="/favicon.svg"
+            alt=""
+            width={32}
+            height={32}
+            className="w-8 h-8 rounded-lg"
+          />
           <span className="text-lg sm:text-xl font-semibold tracking-tight text-white">
             Звуки Леса
           </span>
