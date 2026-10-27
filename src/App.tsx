@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/sonner';
 import { useAnalytics } from '@/hooks/useAnalytics';
-import { HomePage } from '@/pages/HomePage';
+import { MaintenancePage } from '@/pages/MaintenancePage';
 import { BookingPage } from '@/pages/booking/BookingPage';
 import SeoPage from './pages/seo/SeoPage';
 import BlogIndex from './pages/blog/BlogIndex';
@@ -20,7 +20,9 @@ function App() {
       <AnalyticsTracker />
       <Toaster position="top-center" richColors />
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        {/* Временно вместо лендинга — заглушка «технические работы».
+            После завершения работ вернуть <HomePage /> из '@/pages/HomePage'. */}
+        <Route path="/" element={<MaintenancePage />} />
         <Route path="/booking/:cabinId" element={<BookingPage />} />
         <Route path="/seo/:slug" element={<SeoPage />} />
         <Route path="/blog" element={<BlogIndex />} />
